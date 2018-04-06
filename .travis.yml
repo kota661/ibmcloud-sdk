@@ -1,0 +1,20 @@
+sudo: required
+
+services:
+  - docker
+env:
+  - DOCKER_TAG=kota661/ibmcloud-sdk
+install:
+  - echo "docker build"
+  - docker build -t ${DOCKER_TAG}:${$TRAVIS_BRANCH} .
+
+script:
+  - echo "Build complete!"
+
+after_success:
+  - echo "Current branch is ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+  - if [ "${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}" == "master" ]; then
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker tag ${DOCKER_TAG}:${$TRAVIS_BRANCH} ${DOCKER_TAG}:latest;
+      docker push ${DOCKER_TAG}:latest;
+    fi
