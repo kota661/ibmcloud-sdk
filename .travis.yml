@@ -9,7 +9,7 @@ install:
   - docker build -t $DOCKER_TAG:$TRAVIS_BRANCH .
 
 script:
-  - echo "Build complete!"
+  - docker run kota661/ibmcloud-sdk:latest bx --version
 
 after_success:
   - echo "Current branch is ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"

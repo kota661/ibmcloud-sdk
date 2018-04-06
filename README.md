@@ -1,4 +1,5 @@
 # ibmcloud-sdk
+[![Build Status](https://travis-ci.org/kota661/ibmcloud-sdk.svg?branch=master)](https://travis-ci.org/kota661/ibmcloud-sdk)
 
   IBM CloudやIBM Cloud Container Serviceへデプロイしたい！JenkinsやTravisなど使い慣れたCI/CD環境からやりたい！
   そんなときに必要なCLIをセットにしました。
