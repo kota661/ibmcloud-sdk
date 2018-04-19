@@ -10,6 +10,10 @@ install:
 
 script:
   - docker run kota661/ibmcloud-sdk:latest bx --version
+  - docker run kota661/ibmcloud-sdk:latest bx plugin list
+  - docker run kota661/ibmcloud-sdk:latest bx cs --help 1>/dev/null
+  - docker run kota661/ibmcloud-sdk:latest bx cr --help 1>/dev/null
+  - docker run kota661/ibmcloud-sdk:latest kubectl version --client=true
 
 after_success:
   - echo "Current branch is ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
