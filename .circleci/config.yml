@@ -1,0 +1,57 @@
+version: 2
+jobs:
+  build-and-test:
+    machine: true
+    steps:
+      - checkout
+      # build
+      - run: docker build -t kota661/ibmcloud-sdk:$CIRCLE_BRANCH .
+
+      # test
+      - run:
+          name: test
+          command: |
+            docker run kota661/ibmcloud-sdk:$CIRCLE_BRANCH bx --version
+            docker run kota661/ibmcloud-sdk:$CIRCLE_BRANCH bx plugin list
+            docker run kota661/ibmcloud-sdk:$CIRCLE_BRANCH bx cs --help 1>/dev/null
+            docker run kota661/ibmcloud-sdk:$CIRCLE_BRANCH bx cr --help 1>/dev/null
+            docker run kota661/ibmcloud-sdk:$CIRCLE_BRANCH kubectl version --client=true
+
+      # Docker save
+      - run:
+          name: Docker save
+          command: |
+            mkdir -p ~/caches
+            docker save kota661/ibmcloud-sdk:$CIRCLE_BRANCH -o ~/caches/ibmcloud-sdk.tar
+      - save_cache:
+          key: docker-image-{{ .Branch }}-{{ .Revision }}
+          paths: ~/caches/ibmcloud-sdk.tar
+
+  deploy:
+    machine: true
+    steps:
+      # docker load
+      - restore_cache:
+          key: docker-image-{{ .Branch }}-{{ .Revision }}
+          paths: ~/caches/ibmcloud-sdk.tar
+      - run: docker load -i ~/caches/hello-java.tar
+
+      # docker push
+      - run: |
+          docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+          docker tag kota661/ibmcloud-sdk:$CIRCLE_BRANCH kota661/ibmcloud-sdk:latest
+          docker push kota661/ibmcloud-sdk:latest
+
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build-and-test
+      - deploy:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only:
+                - master
