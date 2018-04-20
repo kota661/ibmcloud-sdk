@@ -34,7 +34,7 @@ jobs:
       - restore_cache:
           key: docker-image-{{ .Branch }}-{{ .Revision }}
           paths: ~/caches/ibmcloud-sdk.tar
-      - run: docker load -i ~/caches/hello-java.tar
+      - run: docker load -i ~/caches/ibmcloud-sdk.tar
 
       # docker push
       - run: |
