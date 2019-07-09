@@ -9,13 +9,12 @@ install:
   - docker build -t $DOCKER_REPO:$TRAVIS_BRANCH .
 
 script:
-  - >-
-    docker run $DOCKER_REPO:$TRAVIS_BRANCH ibmcloud --version \
-    && ibmcloud plugin list | grep -e kubernetes-service -e container-registry \
-    && git --version \
-    && docker --version \
-    && kubectl version --client \
-    && helm version --client
+  - docker run --rm $DOCKER_REPO:$TRAVIS_BRANCH ibmcloud --version
+  - docker run --rm $DOCKER_REPO:$TRAVIS_BRANCH ibmcloud plugin list | grep -e kubernetes-service -e container-registry
+  - docker run --rm $DOCKER_REPO:$TRAVIS_BRANCH git --version 
+  - docker run --rm $DOCKER_REPO:$TRAVIS_BRANCH docker --version 
+  - docker run --rm $DOCKER_REPO:$TRAVIS_BRANCH kubectl version --client 
+  - docker run --rm $DOCKER_REPO:$TRAVIS_BRANCH helm version --client
 
 after_success:
   - echo "Current branch is ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
