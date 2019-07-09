@@ -1,18 +1,20 @@
-FROM debian:9
+FROM ubuntu:19.10
 RUN apt-get update && apt-get install -y \
-    curl \
-    git \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-# bluemix cli
-RUN curl -fsSL https://clis.ng.bluemix.net/install/linux | sh \
-  && bx --version \
-  && bx plugin install container-service -r Bluemix \
-  && bx plugin install container-registry -r Bluemix \
-  && bx plugin install Cloud-Functions -r Bluemix
-# kubernetes cli
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
-  && chmod +x ./kubectl \
-  && mv ./kubectl /usr/local/bin/kubectl
+      curl \
+      git \
+      vim-common \
+      iputils-ping \
+      net-tools \
+      vim \
+      dnsutils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* 
+# IBMCloud CLI 
+RUN curl -sL https://ibm.biz/idt-installer | bash
+# Cleanup
+RUN apt-get purge -y \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* 
 
 CMD ["/bin/bash"]
